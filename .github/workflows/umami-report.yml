@@ -1,0 +1,50 @@
+on:
+  workflow_dispatch:
+  schedule:
+    # every Monday at 8am
+    # https://crontab.guru/#0_8_*_*_1
+    - cron: "0 8 * * 1"
+
+jobs:
+  umami_report:
+    name: Weekly stats for bolingen.me
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Create report from Umami
+        id: umami_report
+        uses: boly38/action-umami-report@umami-server-2.9.0
+        with:
+          umami-server: https://${{secrets.UMAMI_SERVER}}
+          umami-user: ${{secrets.UMAMI_USERNAME}}
+          umami-password: ${{secrets.UMAMI_PASSWORD}}
+          umami-site-domain: ${{secrets.UMAMI_SITE_DOMAIN}}
+          umami-period: 7d
+          umami-unit: day
+          umami-tz: US/Central
+
+      - name: Send report via email
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.fastmail.com
+          server_port: 465
+          secure: true
+          username: ${{secrets.MAIL_USERNAME}}
+          password: ${{secrets.MAIL_PASSWORD}}
+          subject: "Stats for bolingen.me this week"
+          to: bo@haltcase.dev
+          from: "GitHub Actions <reports@haltcase.dev>"
+          html_body: |
+            > TL;DR: ${{ steps.umami_report.outputs.umamiOneLineReport }}
+
+            # Stats for bolingen.me &mdash; ${{ steps.umami_report.outputs.pageviews }} views
+
+            ${{ steps.umami_report.outputs.umamiReport }}
+
+            <p class="font-size: 0.75em; text-align: center;">
+              This email was sent by an automated workflow.<br />
+              <a href="${{ github.server_url }}/${{ github.repository }}">${{ github.repository }}</a><br />
+              ${{ github.workflow }} #${{ github.job }}<br />
+              ${{ job.status }}
+            </p>
+          convert_markdown: true
