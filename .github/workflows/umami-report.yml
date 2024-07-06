@@ -1,3 +1,5 @@
+name: Umami Website Stats
+
 on:
   workflow_dispatch:
   schedule:
