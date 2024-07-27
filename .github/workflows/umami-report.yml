@@ -26,9 +26,9 @@ jobs:
         run: |
           pnpm tsx ./scripts/get-site-stats.ts
         env:
-          UMAMI_SERVER: https://${{secrets.UMAMI_SERVER}}
-          UMAMI_USERNAME: ${{secrets.UMAMI_USERNAME}}
-          UMAMI_PASSWORD: ${{secrets.UMAMI_PASSWORD}}
+          UMAMI_API_CLIENT_ENDPOINT: https://${{secrets.UMAMI_SERVER}}/api
+          UMAMI_API_CLIENT_USER_ID: ${{secrets.UMAMI_API_CLIENT_USER_ID}}
+          UMAMI_API_CLIENT_SECRET: ${{secrets.UMAMI_API_CLIENT_SECRET}}
           UMAMI_SITE_DOMAIN: ${{secrets.UMAMI_SITE_DOMAIN}}
 
       - name: Send report via email
