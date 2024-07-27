@@ -39,8 +39,8 @@ jobs:
           secure: true
           username: ${{secrets.MAIL_USERNAME}}
           password: ${{secrets.MAIL_PASSWORD}}
-          subject: ${{ steps.umami_report.outputs.subject }}
+          subject: ${{ steps.umami_report.outputs.report_subject }}
           to: ${{secrets.REPORT_EMAIL_TO}}
           from: ${{secrets.REPORT_EMAIL_FROM}}
-          html_body: ${{ steps.umami_report.outputs.body }}
+          html_body: ${{ steps.umami_report.outputs.report_body }}
           convert_markdown: true

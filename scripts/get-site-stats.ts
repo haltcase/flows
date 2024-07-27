@@ -151,6 +151,6 @@ ${tablemark(metricsData, {
 })}
 `;
 
-	core.setOutput("reportSubject", subject);
-	core.setOutput("reportBody", body);
+	core.setOutput("report_subject", subject);
+	core.setOutput("report_body", body);
 };
