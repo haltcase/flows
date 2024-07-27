@@ -1,0 +1,24 @@
+{
+	"name": "flows",
+	"type": "module",
+	"module": "index.ts",
+	"prettier": "@haltcase/style/prettier",
+	"dependencies": {
+		"@actions/core": "^1.10.1",
+		"@umami/api-client": "^0.69.0",
+		"date-fns": "^3.6.0",
+		"tablemark": "^3.1.0"
+	},
+	"devDependencies": {
+		"@haltcase/style": "^6.2.1",
+		"@types/node": "*",
+		"eslint": "^8.57.0",
+		"prettier": "^3.3.2",
+		"tsx": "^4.16.2",
+		"typescript": "^5.5.3"
+	},
+	"packageManager": "pnpm@9.6.0+sha512.38dc6fba8dba35b39340b9700112c2fe1e12f10b17134715a4aa98ccf7bb035e76fd981cf0bb384dfa98f8d6af5481c2bef2f4266a24bfa20c34eb7147ce0b5e",
+	"engines": {
+		"node": "20"
+	}
+}

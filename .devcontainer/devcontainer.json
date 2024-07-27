@@ -1,0 +1,25 @@
+// https://containers.dev
+{
+	"name": "Debian",
+	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
+	"remoteEnv": {
+		"FNM_COREPACK_ENABLED": "true",
+		"FNM_RESOLVE_ENGINES": "true"
+	},
+	"postCreateCommand": "bash -i ./.devcontainer/scripts/postCreateCommand.sh",
+	"postStartCommand": "bash -i ./.devcontainer/scripts/postStartCommand.sh",
+	"customizations": {
+		"vscode": {
+			"extensions": ["dbaeumer.vscode-eslint", "esbenp.prettier-vscode"]
+		}
+	}
+
+	// Use 'forwardPorts' to make a list of ports inside the container available locally.
+	// "forwardPorts": [],
+
+	// Configure tool-specific properties.
+	// "customizations": {},
+
+	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
+	// "remoteUser": "root"
+}

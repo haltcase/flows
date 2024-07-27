@@ -13,17 +13,23 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
+      - name: Check out
+        uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Install
+        uses: ./.github/composite-actions/install
+
       - name: Create report from Umami
         id: umami_report
-        uses: boly38/action-umami-report@umami-server-2.9.0
-        with:
-          umami-server: https://${{secrets.UMAMI_SERVER}}
-          umami-user: ${{secrets.UMAMI_USERNAME}}
-          umami-password: ${{secrets.UMAMI_PASSWORD}}
-          umami-site-domain: ${{secrets.UMAMI_SITE_DOMAIN}}
-          umami-period: 7d
-          umami-unit: day
-          umami-tz: US/Central
+        run: |
+          pnpm tsx ./.github/scripts/get-site-stats.ts
+        env:
+          UMAMI_SERVER: https://${{secrets.UMAMI_SERVER}}
+          UMAMI_USERNAME: ${{secrets.UMAMI_USERNAME}}
+          UMAMI_PASSWORD: ${{secrets.UMAMI_PASSWORD}}
+          UMAMI_SITE_DOMAIN: ${{secrets.UMAMI_SITE_DOMAIN}}
 
       - name: Send report via email
         uses: dawidd6/action-send-mail@v3
@@ -33,20 +39,8 @@ jobs:
           secure: true
           username: ${{secrets.MAIL_USERNAME}}
           password: ${{secrets.MAIL_PASSWORD}}
-          subject: "Stats for bolingen.me this week"
-          to: bo@haltcase.dev
-          from: "GitHub Actions <reports@haltcase.dev>"
-          html_body: |
-            > TL;DR: ${{ steps.umami_report.outputs.umamiOneLineReport }}
-
-            # Stats for bolingen.me &mdash; ${{ steps.umami_report.outputs.pageviews }} views
-
-            ${{ steps.umami_report.outputs.umamiReport }}
-
-            <p class="font-size: 0.75em; text-align: center;">
-              This email was sent by an automated workflow.<br />
-              <a href="${{ github.server_url }}/${{ github.repository }}">${{ github.repository }}</a><br />
-              ${{ github.workflow }} #${{ github.job }}<br />
-              ${{ job.status }}
-            </p>
+          subject: ${{ steps.umami_report.outputs.subject }}
+          to: ${{secrets.REPORT_EMAIL_TO}}
+          from: ${{secrets.REPORT_EMAIL_FROM}}
+          html_body: ${{ steps.umami_report.outputs.body }}
           convert_markdown: true

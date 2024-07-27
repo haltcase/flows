@@ -1,0 +1,7 @@
+{
+	"extends": "@haltcase/style/typescript/node",
+	"compilerOptions": {
+		"useDefineForClassFields": true
+	},
+	"include": ["./scripts/**/*.ts"]
+}
