@@ -24,7 +24,7 @@ jobs:
       - name: Create report from Umami
         id: umami_report
         run: |
-          pnpm tsx ./.github/scripts/get-site-stats.ts
+          pnpm tsx ./scripts/get-site-stats.ts
         env:
           UMAMI_SERVER: https://${{secrets.UMAMI_SERVER}}
           UMAMI_USERNAME: ${{secrets.UMAMI_USERNAME}}
