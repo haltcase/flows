@@ -154,3 +154,5 @@ ${tablemark(metricsData, {
 	core.setOutput("report_subject", subject);
 	core.setOutput("report_body", body);
 };
+
+await produceReport();
