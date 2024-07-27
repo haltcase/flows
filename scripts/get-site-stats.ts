@@ -2,6 +2,7 @@ import { getClient, UmamiApiClient } from "@umami/api-client";
 import tablemark from "tablemark";
 import { format, subDays } from "date-fns";
 import * as core from "@actions/core";
+import { marked } from "marked";
 
 import { handleError } from "./shared.js";
 
@@ -122,7 +123,7 @@ export const produceReport = async (): Promise<void> => {
 
 	const subject = `Umami stats update for ${website.domain} ${precedingDateIso} thru ${currentDateIso}`;
 
-	const body = `
+	const bodyMarkdown = `
 # Stats for ${website.domain} &middot; ${timeRange}
 
 ${tablemark(
@@ -150,6 +151,10 @@ ${tablemark(metricsData, {
 	columns: [{ align: "left" }, { align: "right" }]
 })}
 `;
+
+	const body = marked.parse(bodyMarkdown, {
+		gfm: true
+	});
 
 	core.setOutput("report_subject", subject);
 	core.setOutput("report_body", body);

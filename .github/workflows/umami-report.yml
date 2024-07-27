@@ -43,4 +43,3 @@ jobs:
           to: ${{secrets.REPORT_EMAIL_TO}}
           from: ${{secrets.REPORT_EMAIL_FROM}}
           html_body: ${{ steps.umami_report.outputs.report_body }}
-          convert_markdown: true
