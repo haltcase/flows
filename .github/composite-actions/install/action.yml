@@ -14,6 +14,8 @@ runs:
   steps:
     - name: Set up pnpm
       uses: pnpm/action-setup@v4
+      with:
+        package_json_file: package.json
 
     - name: Set up Node
       uses: actions/setup-node@v4
@@ -22,7 +24,4 @@ runs:
         cache: pnpm
 
     - name: Install dependencies
-      shell: bash
-      run: |
-        corepack enable
-        pnpm install
+      run: pnpm install

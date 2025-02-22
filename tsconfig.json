@@ -1,7 +1,13 @@
 {
 	"extends": "@haltcase/style/typescript/node",
 	"compilerOptions": {
-		"useDefineForClassFields": true
+		"target": "esnext",
+		"module": "nodenext",
+		"lib": ["ES2023.Array"],
+		"allowImportingTsExtensions": true,
+		"erasableSyntaxOnly": true,
+		"rewriteRelativeImportExtensions": true,
+		"verbatimModuleSyntax": true
 	},
-	"include": ["./scripts/**/*.ts"]
+	"include": ["index.ts", "./scripts/**/*.ts"]
 }

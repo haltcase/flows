@@ -3,7 +3,6 @@
 	"name": "Debian",
 	"image": "mcr.microsoft.com/devcontainers/base:bookworm",
 	"remoteEnv": {
-		"FNM_COREPACK_ENABLED": "true",
 		"FNM_RESOLVE_ENGINES": "true"
 	},
 	"postCreateCommand": "bash -i ./.devcontainer/scripts/postCreateCommand.sh",

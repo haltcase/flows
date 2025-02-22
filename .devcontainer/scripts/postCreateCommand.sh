@@ -14,4 +14,8 @@ echo 'fnm install > /dev/null 2>&1 && fnm use --install-if-missing > /dev/null 2
 
 source /home/vscode/.bashrc
 
-corepack install && corepack enable pnpm
+# install pnpm@10 which is the latest version that supports managing its own
+# version by default (manage-package-manager-versions)
+npm i -g pnpm@10
+
+pnpm install
