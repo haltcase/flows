@@ -9,5 +9,5 @@
 		"rewriteRelativeImportExtensions": true,
 		"verbatimModuleSyntax": true
 	},
-	"include": ["index.ts", "./scripts/**/*.ts"]
+	"include": ["./scripts/**/*.ts", "**/*.d.ts"]
 }
