@@ -8,7 +8,7 @@
 	"prettier": "@haltcase/style/prettier",
 	"dependencies": {
 		"@actions/core": "^1.10.1",
-		"@umami/api-client": "^0.69.0",
+		"@umami/api-client": "^0.77.0",
 		"date-fns": "^3.6.0",
 		"marked": "^13.0.2",
 		"tablemark": "^3.1.0"

@@ -1,24 +1,18 @@
-import { getClient, UmamiApiClient } from "@umami/api-client";
-import tablemark from "tablemark";
-import { format, subDays } from "date-fns";
 import * as core from "@actions/core";
+import { getClient } from "@umami/api-client";
+import { format, subDays } from "date-fns";
 import { marked } from "marked";
+import tablemark from "tablemark";
 
-import { handleError } from "./shared.js";
+import {
+	handleError,
+	type UmamiApiResponse,
+	type UnwrappedUmamiResponseData
+} from "./shared.ts";
 
-const umamiSiteDomain = process.env.UMAMI_SITE_DOMAIN;
+const umamiSiteId = process.env.UMAMI_SITE_ID;
 
-const getWebsiteByDomain = async (client: UmamiApiClient, domain: string) => {
-	const { ok, data, error } = await client.getWebsites();
-
-	if (!ok || !data) {
-		throw error;
-	}
-
-	return data.data.find((site) => site.domain === domain);
-};
-
-const percentChange = (from: number = 0, to: number = 0) => {
+const percentChange = (from = 0, to = 0) => {
 	if (from === to) {
 		return "no change";
 	}
@@ -30,15 +24,19 @@ const percentChange = (from: number = 0, to: number = 0) => {
 	return `+${Math.round(((to - from) / from) * 100)}%`;
 };
 
-export const produceReport = async (): Promise<void> => {
+export const produceReport = async (siteId: string): Promise<void> => {
 	const client = getClient();
 
-	const website = await getWebsiteByDomain(client, umamiSiteDomain || "");
+	type Data = UnwrappedUmamiResponseData<typeof client.getWebsite>;
 
-	if (!website) {
-		handleError(
-			`Could not find website for supplied domain '${umamiSiteDomain}'`
-		);
+	const {
+		ok,
+		data: website,
+		error
+	} = (await client.getWebsite(siteId)) as UmamiApiResponse<Data>;
+
+	if (!ok) {
+		handleError(`Failed to fetch website: ${error}`);
 	}
 
 	const currentDate = new Date();
@@ -57,17 +55,16 @@ export const produceReport = async (): Promise<void> => {
 			...timePeriod
 		}),
 
-		// @ts-expect-error https://github.com/umami-software/api-client/issues/12
 		client.getWebsitePageviews(website.id, {
 			...timePeriod,
 			timezone,
 			unit
 		}),
 
-		// @ts-expect-error types are wrong
 		client.getWebsiteEvents(website.id, {
 			...timePeriod,
-			timezone,
+			// @ts-expect-error types are wrong
+			// timezone,
 			unit
 		}),
 
@@ -77,13 +74,18 @@ export const produceReport = async (): Promise<void> => {
 		})
 	]);
 
-	if ([stats.ok, pageviews.ok, events.ok, metrics.ok].some((ok) => !ok)) {
-		const error = [stats.error, pageviews.error, events.error, metrics.error]
+	if ([stats.ok, pageviews.ok, events.ok, metrics.ok].some((isOk) => !isOk)) {
+		const statsErrors = [
+			stats.error,
+			pageviews.error,
+			events.error,
+			metrics.error
+		]
 			.filter(Boolean)
-			.map((it) => String(it))
+			.map(String)
 			.join("\n");
 
-		handleError(`Failed to fetch website data: ${error}`);
+		handleError(`Failed to fetch website data: ${statsErrors}`);
 	}
 
 	const precedingDateIso = format(precedingDate, "yyyy-MM-dd");
@@ -103,21 +105,18 @@ export const produceReport = async (): Promise<void> => {
 	const values = [
 		{
 			name: "Views",
-			currentPeriod: stats.data?.pageviews?.value,
-			// @ts-expect-error umami's types are wrong
-			previousPeriod: stats.data?.pageviews?.prev
+			currentPeriod: stats.data?.pageviews.value,
+			previousPeriod: stats.data?.pageviews.prev
 		},
 		{
 			name: "Visitors",
-			currentPeriod: stats.data?.visitors?.value,
-			// @ts-expect-error umami's types are wrong
-			previousPeriod: stats.data?.visitors?.prev
+			currentPeriod: stats.data?.visitors.value,
+			previousPeriod: stats.data?.visitors.prev
 		},
 		{
 			name: "Bounces",
-			currentPeriod: stats.data?.bounces?.value,
-			// @ts-expect-error umami's types are wrong
-			previousPeriod: stats.data?.bounces?.prev
+			currentPeriod: stats.data?.bounces.value,
+			previousPeriod: stats.data?.bounces.prev
 		}
 	];
 
@@ -160,4 +159,8 @@ ${tablemark(metricsData, {
 	core.setOutput("report_body", body);
 };
 
-await produceReport();
+if (!umamiSiteId) {
+	handleError("UMAMI_SITE_ID is required");
+}
+
+await produceReport(umamiSiteId);
