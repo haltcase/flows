@@ -17,6 +17,10 @@ const percentChange = (from = 0, to = 0) => {
 		return "no change";
 	}
 
+	if (from === 0) {
+		return "new";
+	}
+
 	if (from > to) {
 		return `-${Math.round(((from - to) / from) * 100)}%`;
 	}
