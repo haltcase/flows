@@ -1,13 +1,5 @@
-name: "Install"
-description: "Sets up Node and installs dependencies"
-
-inputs:
-  fetch-depth:
-    default: "1"
-    required: false
-  persist-credentials:
-    default: true
-    required: false
+name: Install
+description: Set up Node and install dependencies
 
 runs:
   using: composite
