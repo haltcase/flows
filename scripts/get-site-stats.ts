@@ -1,3 +1,6 @@
+import { readFile } from "node:fs/promises";
+import { join } from "node:path";
+
 import * as core from "@actions/core";
 import { getClient } from "@umami/api-client";
 import { format, subDays } from "date-fns";
@@ -127,7 +130,9 @@ export const produceReport = async (siteId: string): Promise<void> => {
 	const subject = `Umami stats update for ${website.domain} ${precedingDateIso} thru ${currentDateIso}`;
 
 	const bodyMarkdown = `
-# Stats for ${website.domain} &middot; ${timeRange}
+# Stats for ${website.domain}
+
+## ${timeRange}
 
 ${tablemark(
 	values.map(({ name, previousPeriod, currentPeriod }) => ({
@@ -146,7 +151,7 @@ ${tablemark(
 	}
 )}
 
-${peakDay ? `**Peak day**: ${peakDay.y} view(s) on ${peakDay.x}` : ""}
+${peakDay ? `**Peak day**: ${peakDay.y} view${peakDay.y === 1 ? "" : "s"} on ${peakDay.x.split(" ")[0]}` : ""}
 
 ## Paths
 
@@ -155,12 +160,18 @@ ${tablemark(metricsData, {
 })}
 `;
 
-	const body = marked.parse(bodyMarkdown, {
+	const body = await marked.parse(bodyMarkdown, {
 		gfm: true
 	});
 
+	const htmlTemplate = await readFile(
+		join(import.meta.dirname, "./email-template.html"),
+		"utf8"
+	);
+	const fullBody = htmlTemplate.replace("{{body}}", body);
+
 	core.setOutput("report_subject", subject);
-	core.setOutput("report_body", body);
+	core.setOutput("report_body", fullBody);
 };
 
 if (!umamiSiteId) {
