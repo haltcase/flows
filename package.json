@@ -7,21 +7,21 @@
 	},
 	"prettier": "@haltcase/style/prettier",
 	"dependencies": {
-		"@actions/core": "^1.10.1",
-		"@umami/api-client": "^0.77.0",
-		"date-fns": "^3.6.0",
-		"marked": "^13.0.2",
+		"@actions/core": "^1.11.1",
+		"@umami/api-client": "^0.80.0",
+		"date-fns": "4.1.0",
+		"marked": "16.1.1",
 		"tablemark": "^3.1.0"
 	},
 	"devDependencies": {
-		"@haltcase/style": "^7.2.0",
-		"@types/node": "*",
-		"eslint": "^9.21.0",
-		"prettier": "^3.5.2",
-		"typescript": "5.8.1-rc"
+		"@haltcase/style": "^7.3.1",
+		"@types/node": "^24.1.0",
+		"eslint": "^9.32.0",
+		"prettier": "^3.6.2",
+		"typescript": "5.8.3"
 	},
-	"packageManager": "pnpm@10.4.1",
+	"packageManager": "pnpm@10.13.1",
 	"engines": {
-		"node": "23"
+		"node": "24"
 	}
 }
